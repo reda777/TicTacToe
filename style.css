@@ -1,25 +1,14 @@
-* { 
-    padding: 0; 
-    margin: 0;
+body{
+    display: flex;
+    flex-direction: column;
 }
-html, body {
-    min-height: 100%;
-    height: 100%;
-}
-.table{
+/* Board 
+    ==========================================================*/
+.board{
     display: grid;
     grid-template-columns: repeat(3,100px);
     grid-template-rows: repeat(3,100px);
-    background:cyan;
-    height: 300px;
-    width: 300px;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
 }
-.table div{
-    border-right:1px solid black;
-    border-bottom: 1px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.board > div{
+    border: 1px solid black;
 }
