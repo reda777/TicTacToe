@@ -14,12 +14,9 @@ const gameBoard = (() => {
     }
     let user1 = player("x");
     let user2 = player("o");
-    let mode = "playerVSplayer";
+    let mode;
     const setMode = function(x){
         mode=x;
-    }
-    const getMode = function(){
-        return mode;
     }
     let bSquares = {
         s0: { id: 0, content: 0 },
@@ -129,40 +126,43 @@ const gameBoard = (() => {
         bSquares[currentSquareId].content = shape[playerShape];
     }
     const checkWinner = function () {
+        const results=document.querySelector(".results");
         for (let line in boardLines) {
             if (boardLines[line].reduce((a, b) => a + b.content, 0) == 3) {
+                results.textContent="X WON";
                 console.log("x won", line, boardLines[line]);
-                finishGame();
+                finishGame(mode);
                 return true;
             }
             else if (boardLines[line].reduce((a, b) => a + b.content, 0) == -30) {
+                results.textContent="O WON";
                 console.log("o won", line, boardLines[line]);
-                finishGame();
+                finishGame(mode);
                 return true;
             }
             else if (Object.values(bSquares).filter(x => x.content == 0).length == 0) {
+                results.textContent="TIE";
                 console.log("tie");
-                finishGame();
+                finishGame(mode);
                 return true;
             }
         }
     }
     const start=function(modeValue){
-        modeValue=modeValue||mode;
         setMode(modeValue);
         const boardSquareSelected = document.querySelectorAll(".board > div");
         boardSquareSelected.forEach((square) => {
-            square.addEventListener("click", gameMode[modeValue]);
+            square.addEventListener("click", gameMode[mode]);
         });
         //hide picking options after choosing a shape
         const pickShape=document.querySelector(".pickShape");
-        pickShape.classList.add("hidePicks");
+        pickShape.classList.add("hide");
         
     }
-    const finishGame = function () {
+    const finishGame = function (modeValue) {
         const boardSquareSelected = document.querySelectorAll(".board > div");
         boardSquareSelected.forEach((square) => {
-            square.removeEventListener("click", gameMode[mode]);
+            square.removeEventListener("click", gameMode[modeValue]);
         });
     }
     //restart button
@@ -175,7 +175,8 @@ const gameBoard = (() => {
         boardSquares.forEach((square) => {
             square.textContent="";
         });
-        finishGame();
+        finishGame(mode);
+        document.querySelector(".results").textContent="";
         pickShape(mode);
         console.log(bSquares);
     }
@@ -193,7 +194,7 @@ const gameBoard = (() => {
     vsCpuButton.addEventListener("click", vsCpu);
     //picking a shape
     const pickShape=function(mode){
-        document.querySelector(".hidePicks")?.classList.remove("hidePicks");
+        document.querySelector(".hide")?.classList.remove("hide");
         const xButton=document.querySelector(".xButton");
         const oButton=document.querySelector(".oButton");
         xButton.addEventListener("click",()=>{
@@ -209,9 +210,8 @@ const gameBoard = (() => {
     }
     return {start,pickShape};
 })();
-gameBoard.pickShape();
+gameBoard.pickShape("playerVSplayer");
 //choose shape(still doesnt work for cpu)
-//winning message
 //fix tie even after winning
 //design
 

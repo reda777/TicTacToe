@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
     <title>Tic Tac Toe</title>
 </head>
@@ -22,14 +22,21 @@
         <div id="s8" class="hLine3 vLine3 mLine1"></div>
     </div>
     <div class="ui">
-        <div class="pickShape">
-            <div>Pick a shape:</div>
+        <div class="results"></div>
+        <div class="pickShape hide">
+            <div class="textPickShape">Pick a shape:</div>
             <button class="xButton">X</button>
             <button class="oButton">O</button>
         </div>
-        <button class="vsCpu">vs CPU</button>
-        <button class="vsPlayer">2 Players</button>
-        <button class="restart">Restart</button>
+        <div class="change-restart hide">
+            <button class="Change">Change</button>
+            <button class="restart">Restart</button>
+        </div>
+        <div class="game-mode hide">
+            <button class="vsCpu">vs CPU</button>
+            <button class="vsPlayer">2 Players</button>
+        </div>
+        
     </div>
 </body>
 </html>
