@@ -1,19 +1,27 @@
-const player = (shape) => {
-    let turn;
-    const getTurn = () => turn;
-    const setTurn = (x) => turn=x;
-    const toggleTurn = () => {
-        turn == 1 ? turn = 0 : turn = 1;
-    };
-    return { shape, getTurn, toggleTurn, setTurn };
-};
 const gameBoard = (() => {
+    //players
+    let player1 = {
+        turn: 1,
+        shape: undefined,
+        getShape: function(){return player1.shape},
+        setShape: function(x){player1.shape=x},
+        toggleTurn: function(){
+            player1.turn == 1 ? player1.turn = 0 : player1.turn = 1;
+        }
+    }
+    let player2 = {
+        turn: 0,
+        shape: undefined,
+        getShape: function(){return player2.shape},
+        setShape: function(x){player2.shape=x},
+        toggleTurn: function(){
+            player2.turn == 1 ? player2.turn = 0 : player2.turn = 1;
+        }
+    }
     const shape = {
         "x": 1,
         "o": -10
     }
-    let user1 = player("x");
-    let user2 = player("o");
     let mode;
     const setMode = function(x){
         mode=x;
@@ -63,31 +71,31 @@ const gameBoard = (() => {
                 break;
         }
         const nextSquare = document.getElementById(Object.keys(bSquares).find(key => bSquares[key].id == cpuSquareIndex));
-        nextSquare.textContent = user2.shape;
-        fillSquaresObject(nextSquare, user2.shape);
-        nextSquare.removeEventListener("click", gameMode[mode]);
+        nextSquare.textContent = player2.shape;
+        fillSquaresObject(nextSquare, player2.shape);
+        nextSquare.removeEventListener("click", gameMode.playerVScpu);
     }
     const gameMode = {
         playerVSplayer: function () {
-            if (user1.getTurn() == 1) {
-                this.textContent = user1.shape;
-                user1.toggleTurn();
-                user2.toggleTurn();
-                fillSquaresObject(this, user1.shape);
+            if (player1.turn == 1) {
+                this.textContent = player1.shape;
+                player1.toggleTurn();
+                player2.toggleTurn();
+                fillSquaresObject(this, player1.shape);
                 this.removeEventListener("click", gameMode.playerVSplayer);
                 checkWinner();
-            } else if (user1.getTurn() == 0) {
-                this.textContent = user2.shape;
-                user2.toggleTurn();
-                user1.toggleTurn();
-                fillSquaresObject(this, user2.shape);
+            } else if (player1.turn == 0) {
+                this.textContent = player2.shape;
+                player2.toggleTurn();
+                player1.toggleTurn();
+                fillSquaresObject(this, player2.shape);
                 this.removeEventListener("click", gameMode.playerVSplayer);
                 checkWinner();
             }
         },
         playerVScpu: function () {
-            this.textContent = user1.shape;
-            fillSquaresObject(this, user1.shape);
+            this.textContent = player1.shape;
+            fillSquaresObject(this, player1.shape);
             this.removeEventListener("click", gameMode.playerVScpu);
             const winnerStatus = checkWinner();
             //player played for the first time. cpu plays at random place.
@@ -100,11 +108,10 @@ const gameBoard = (() => {
                     if (boardLines[line].reduce((a, b) => a + b.content, 0) == 2) {
                         for (let item of boardLines[line]) {
                             if (item.content == 0) {
-                                let cpuSquareIndex;
-                                cpuSquareIndex = item.id;
-                                const nextSquare = document.getElementById(Object.keys(bSquares).find(key => bSquares[key].id == cpuSquareIndex));
-                                nextSquare.textContent = user2.shape;
-                                fillSquaresObject(nextSquare, user2.shape);
+                                const nextSquare = document.getElementById(Object.keys(bSquares).find(key => bSquares[key].id == item.id));
+                                console.log(nextSquare);
+                                nextSquare.textContent = player2.shape;
+                                fillSquaresObject(nextSquare, player2.shape);
                                 nextSquare.removeEventListener("click", gameMode.playerVScpu);
                                 checkWinner();
                             }
@@ -130,88 +137,120 @@ const gameBoard = (() => {
         for (let line in boardLines) {
             if (boardLines[line].reduce((a, b) => a + b.content, 0) == 3) {
                 results.textContent="X WON";
-                console.log("x won", line, boardLines[line]);
-                finishGame(mode);
+                removeListeners();
                 return true;
             }
             else if (boardLines[line].reduce((a, b) => a + b.content, 0) == -30) {
                 results.textContent="O WON";
-                console.log("o won", line, boardLines[line]);
-                finishGame(mode);
+                removeListeners();
                 return true;
             }
             else if (Object.values(bSquares).filter(x => x.content == 0).length == 0) {
                 results.textContent="TIE";
-                console.log("tie");
-                finishGame(mode);
+                removeListeners();
                 return true;
             }
         }
     }
-    const start=function(modeValue){
-        setMode(modeValue);
+    const addListeners=function(){
         const boardSquareSelected = document.querySelectorAll(".board > div");
         boardSquareSelected.forEach((square) => {
             square.addEventListener("click", gameMode[mode]);
         });
-        //hide picking options after choosing a shape
-        const pickShape=document.querySelector(".pickShape");
-        pickShape.classList.add("hide");
-        
     }
-    const finishGame = function (modeValue) {
+    const removeListeners = function () {
         const boardSquareSelected = document.querySelectorAll(".board > div");
         boardSquareSelected.forEach((square) => {
-            square.removeEventListener("click", gameMode[modeValue]);
+            square.removeEventListener("click", gameMode[mode]);
         });
     }
-    //restart button
-    const restartButton = document.querySelector(".restart");
-    const restart=function(mode){
-        Object.values(bSquares).forEach(item =>{
-            item.content=0;
+    return {setMode,addListeners,removeListeners,bSquares,gameMode,player1,player2};
+})();
+
+/* USER INTERFACE ========================================*/
+const userInterface = (()=>{
+    const pickMode=function(){
+        const gameMode = document.querySelector(".ui .game-mode");
+        gameMode.classList.remove("hide");
+        const vsCpu=document.querySelector(".vsCpu");
+        const vsPlayer=document.querySelector(".vsPlayer");
+        vsCpu.addEventListener("click",()=>{
+            gameBoard.setMode("playerVScpu");
+            gameMode.classList.add("hide");
+            pickShape();
         });
-        const boardSquares = document.querySelectorAll(".board > div");
-        boardSquares.forEach((square) => {
-            square.textContent="";
+        vsPlayer.addEventListener("click",()=>{
+            gameBoard.setMode("playerVSplayer");
+            gameMode.classList.add("hide");
+            pickShape();
         });
-        finishGame(mode);
-        document.querySelector(".results").textContent="";
-        pickShape(mode);
-        console.log(bSquares);
     }
-    restartButton.addEventListener("click", ()=>{restart()});
-    //restart game with set mode
-    const vsPlayerButton=document.querySelector(".vsPlayer");
-    const vsPlayer=function(){
-        restart("playerVSplayer");
-    }
-    vsPlayerButton.addEventListener("click", vsPlayer);
-    const vsCpuButton=document.querySelector(".vsCpu");
-    const vsCpu=function(){
-        restart("playerVScpu");
-    }
-    vsCpuButton.addEventListener("click", vsCpu);
-    //picking a shape
-    const pickShape=function(mode){
-        document.querySelector(".hide")?.classList.remove("hide");
+    const pickShape=function(){
+        const gameShape = document.querySelector(".ui .pickShape");
+        gameShape.classList.remove("hide");
         const xButton=document.querySelector(".xButton");
         const oButton=document.querySelector(".oButton");
         xButton.addEventListener("click",()=>{
-            user1.setTurn(1);
-            user2.setTurn(0);
-            start(mode);
+            gameShape.classList.add("hide");
+            if(gameBoard.player1.turn==0){
+                gameBoard.player1.toggleTurn();
+                gameBoard.player2.toggleTurn();
+            }
+            gameBoard.player1.setShape("x");
+            gameBoard.player2.setShape("o");
+            gameBoard.addListeners();
+            pickRestartOrGameMode();
         });
         oButton.addEventListener("click",()=>{
-            user2.setTurn(1);
-            user1.setTurn(0);
-            start(mode);
+            gameShape.classList.add("hide");
+            if(gameBoard.player1.turn==0){
+                gameBoard.player1.toggleTurn();
+                gameBoard.player2.toggleTurn();
+            }
+            gameBoard.player1.setShape("o");
+            gameBoard.player2.setShape("x");
+            gameBoard.addListeners();
+            pickRestartOrGameMode();
         });
     }
-    return {start,pickShape};
+    const pickRestartOrGameMode = function () {
+        const gameUi = document.querySelector(".ui .change-restart");
+        gameUi.classList.remove("hide");
+        const change = document.querySelector(".change");
+        const restart = document.querySelector(".restart");
+        change.addEventListener("click",() => {
+            gameUi.classList.add("hide");
+            Object.values(gameBoard.bSquares).forEach(item => {
+                item.content = 0;
+            });
+            //empty the board
+            const boardSquares = document.querySelectorAll(".board > div");
+            boardSquares.forEach((square) => {
+                square.textContent = "";
+            });
+            //remove listners
+            gameBoard.removeListeners();
+            pickMode();
+        });
+        restart.addEventListener("click",()=>{
+            gameUi.classList.add("hide");
+            Object.values(gameBoard.bSquares).forEach(item => {
+                item.content = 0;
+            });
+            //empty the board
+            const boardSquares = document.querySelectorAll(".board > div");
+            boardSquares.forEach((square) => {
+                square.textContent = "";
+            });
+            //remove listners
+            gameBoard.removeListeners();
+            pickShape();
+        });
+    }
+    return{pickMode};
 })();
-gameBoard.pickShape("playerVSplayer");
-//choose shape(still doesnt work for cpu)
-//fix tie even after winning
-//design
+userInterface.pickMode();
+//whats left
+//fix cpu not working as intended when using o
+//design still need work
 
