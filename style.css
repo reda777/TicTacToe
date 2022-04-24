@@ -1,8 +1,3 @@
-:root {
-    --main-color: black;
-    --background-color: white;
-}
-
 @font-face {
     font-family: PermanentMarker;
     src: url(fonts/PermanentMarker-Regular.ttf);
@@ -13,10 +8,24 @@
     src: url(fonts/PatrickHand-Regular.ttf);
 }
 
+.lightTheme {
+    --main-color: black;
+    --background-color: white;
+}
+
+.darkTheme {
+    --main-color: white;
+    --background-color: black;
+}
+
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
+    height: 100vh;
+    background-color: var(--background-color);
+    color: var(--main-color);
 }
 
 /* Header
@@ -27,6 +36,36 @@ body {
     align-items: center;
     font-size: 48px;
     font-family: PermanentMarker, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.dark-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border-radius: 3px;
+}
+
+.dark-button:hover {
+    background-color: var(--main-color);
+    transition: 300ms;
+}
+
+.dark-button-icon {
+    background-color: var(--main-color);
+    mask: url(images/moon-svgrepo-com.svg) no-repeat center;
+    width: 50px;
+    height: 50px;
+}
+
+.dark-button-icon:hover {
+    background-color: var(--background-color);
+    transition: 300ms;
 }
 
 /* Board 
@@ -107,7 +146,7 @@ body {
 .change-restart {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 28.75px 3fr;
+    grid-template-rows: 41px 3fr;
     row-gap: 18px;
     justify-items: center;
 }
@@ -118,7 +157,7 @@ body {
     grid-column: 1/3;
     grid-row: 1/2;
     font-family: PatrickHand;
-    font-size: 25px;
+    font-size: 35px;
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -137,15 +176,15 @@ body {
     border: 4px solid var(--main-color);
     border-radius: 10px;
     font-family: PatrickHand;
-    font-size: 25px;
+    font-size: 40px;
     font-weight: 900;
     width: 200px;
     height: 70px;
 }
 
-.xButton,
-.oButton {
-    font-size: 40px;
+.change,
+.restart {
+    font-size: 25px;
 }
 
 .xButton:hover,

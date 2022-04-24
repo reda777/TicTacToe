@@ -3,18 +3,18 @@ const gameBoard = (() => {
     let player1 = {
         turn: 1,
         shape: undefined,
-        getShape: function(){return player1.shape},
-        setShape: function(x){player1.shape=x},
-        toggleTurn: function(){
+        getShape: function () { return player1.shape },
+        setShape: function (x) { player1.shape = x },
+        toggleTurn: function () {
             player1.turn == 1 ? player1.turn = 0 : player1.turn = 1;
         }
     }
     let player2 = {
         turn: 0,
         shape: undefined,
-        getShape: function(){return player2.shape},
-        setShape: function(x){player2.shape=x},
-        toggleTurn: function(){
+        getShape: function () { return player2.shape },
+        setShape: function (x) { player2.shape = x },
+        toggleTurn: function () {
             player2.turn == 1 ? player2.turn = 0 : player2.turn = 1;
         }
     }
@@ -23,8 +23,8 @@ const gameBoard = (() => {
         "o": -10
     }
     let mode;
-    const setMode = function(x){
-        mode=x;
+    const setMode = function (x) {
+        mode = x;
     }
     let bSquares = {
         s0: { id: 0, content: 0 },
@@ -57,7 +57,7 @@ const gameBoard = (() => {
     }
     const checkWinningCondition = function (shapeValue) {
         for (let line in boardLines) {
-            if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue*2) {
+            if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue * 2) {
                 return true;
             }
         }
@@ -94,7 +94,7 @@ const gameBoard = (() => {
             }
         },
         playerVScpu: function () {
-            let shapeValue=(player1.shape=="x")?1:-10;
+            let shapeValue = (player1.shape == "x") ? 1 : -10;
             this.textContent = player1.shape;
             fillSquaresObject(this, player1.shape);
             this.removeEventListener("click", gameMode.playerVScpu);
@@ -106,7 +106,7 @@ const gameBoard = (() => {
             else if (!winnerStatus) {
                 for (let line in boardLines) {
                     //if player is winning next turn
-                    if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue*2) {
+                    if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue * 2) {
                         for (let item of boardLines[line]) {
                             if (item.content == 0) {
                                 const nextSquare = document.getElementById(Object.keys(bSquares).find(key => bSquares[key].id == item.id));
@@ -133,26 +133,26 @@ const gameBoard = (() => {
         bSquares[currentSquareId].content = shape[playerShape];
     }
     const checkWinner = function () {
-        const results=document.querySelector(".results");
+        const results = document.querySelector(".results");
         for (let line in boardLines) {
             if (boardLines[line].reduce((a, b) => a + b.content, 0) == 3) {
-                results.textContent="X Won (ﾉ^_^)ﾉ";
+                results.textContent = "X Won (ﾉ^_^)ﾉ";
                 removeListeners();
                 return true;
             }
             else if (boardLines[line].reduce((a, b) => a + b.content, 0) == -30) {
-                results.textContent="O Won (ﾉ^_^)ﾉ";
+                results.textContent = "O Won (ﾉ^_^)ﾉ";
                 removeListeners();
                 return true;
             }
         }
         if (Object.values(bSquares).filter(x => x.content == 0).length == 0) {
-            results.textContent="Tie (-_-)";
+            results.textContent = "Tie (-_-)";
             removeListeners();
             return true;
         }
     }
-    const addListeners=function(){
+    const addListeners = function () {
         const boardSquareSelected = document.querySelectorAll(".board > div");
         boardSquareSelected.forEach((square) => {
             square.addEventListener("click", gameMode[mode]);
@@ -164,35 +164,35 @@ const gameBoard = (() => {
             square.removeEventListener("click", gameMode[mode]);
         });
     }
-    return {setMode,addListeners,removeListeners,bSquares,gameMode,player1,player2};
+    return { setMode, addListeners, removeListeners, bSquares, gameMode, player1, player2 };
 })();
 
 /* USER INTERFACE ========================================*/
-const userInterface = (()=>{
-    const pickMode=function(){
+const userInterface = (() => {
+    const pickMode = function () {
         const gameMode = document.querySelector(".ui .game-mode");
         gameMode.classList.remove("hide");
-        const vsCpu=document.querySelector(".vsCpu");
-        const vsPlayer=document.querySelector(".vsPlayer");
-        vsCpu.addEventListener("click",()=>{
+        const vsCpu = document.querySelector(".vsCpu");
+        const vsPlayer = document.querySelector(".vsPlayer");
+        vsCpu.addEventListener("click", () => {
             gameBoard.setMode("playerVScpu");
             gameMode.classList.add("hide");
             pickShape();
         });
-        vsPlayer.addEventListener("click",()=>{
+        vsPlayer.addEventListener("click", () => {
             gameBoard.setMode("playerVSplayer");
             gameMode.classList.add("hide");
             pickShape();
         });
     }
-    const pickShape=function(){
+    const pickShape = function () {
         const gameShape = document.querySelector(".ui .pickShape");
         gameShape.classList.remove("hide");
-        const xButton=document.querySelector(".xButton");
-        const oButton=document.querySelector(".oButton");
-        xButton.addEventListener("click",()=>{
+        const xButton = document.querySelector(".xButton");
+        const oButton = document.querySelector(".oButton");
+        xButton.addEventListener("click", () => {
             gameShape.classList.add("hide");
-            if(gameBoard.player1.turn==0){
+            if (gameBoard.player1.turn == 0) {
                 gameBoard.player1.toggleTurn();
                 gameBoard.player2.toggleTurn();
             }
@@ -201,9 +201,9 @@ const userInterface = (()=>{
             gameBoard.addListeners();
             pickRestartOrGameMode();
         });
-        oButton.addEventListener("click",()=>{
+        oButton.addEventListener("click", () => {
             gameShape.classList.add("hide");
-            if(gameBoard.player1.turn==0){
+            if (gameBoard.player1.turn == 0) {
                 gameBoard.player1.toggleTurn();
                 gameBoard.player2.toggleTurn();
             }
@@ -218,8 +218,8 @@ const userInterface = (()=>{
         gameUi.classList.remove("hide");
         const change = document.querySelector(".change");
         const restart = document.querySelector(".restart");
-        const results=document.querySelector(".results");
-        change.addEventListener("click",() => {
+        const results = document.querySelector(".results");
+        change.addEventListener("click", () => {
             gameUi.classList.add("hide");
             Object.values(gameBoard.bSquares).forEach(item => {
                 item.content = 0;
@@ -231,10 +231,10 @@ const userInterface = (()=>{
             });
             //remove listeners
             gameBoard.removeListeners();
-            results.textContent="";
+            results.textContent = "";
             pickMode();
         });
-        restart.addEventListener("click",()=>{
+        restart.addEventListener("click", () => {
             gameUi.classList.add("hide");
             Object.values(gameBoard.bSquares).forEach(item => {
                 item.content = 0;
@@ -246,13 +246,34 @@ const userInterface = (()=>{
             });
             //remove listeners
             gameBoard.removeListeners();
-            results.textContent="";
+            results.textContent = "";
             pickShape();
         });
     }
-    return{pickMode};
+    return { pickMode };
+})();
+const darkMode = (() => {
+    let theme;
+    const darkButton = document.querySelector(".dark-button");
+    const osDarkThem = window.matchMedia("(prefers-color-scheme: dark)");
+    if (osDarkThem.matches) {
+        localStorage.setItem("theme", "dark");
+        document.body.classList.add("darkTheme");
+    } else {
+        localStorage.setItem("theme", "light");
+        document.body.classList.add("lightTheme");
+    }
+    darkButton.addEventListener("click", function () {
+        if (document.body.classList.contains("lightTheme")) {
+            document.body.classList.remove("lightTheme");
+            document.body.classList.add("darkTheme");
+            theme = "dark";
+        } else {
+            document.body.classList.remove("darkTheme");
+            document.body.classList.add("lightTheme");
+            theme = "light";
+        }
+        localStorage.setItem("theme", theme);
+    });
 })();
 userInterface.pickMode();
-//whats left
-//design still need work
-
