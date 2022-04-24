@@ -20,7 +20,7 @@ body {
 }
 
 /* Header
-    ============================================*/
+    ==========================================================*/
 .header {
     height: 20vh;
     display: flex;
@@ -93,47 +93,67 @@ body {
     border-width: 2px 0 0 2px;
 }
 
+/* User Interface 
+    ==========================================================*/
 .ui {
-    border: 1px solid var(--main-color);
     margin-top: 30px;
     padding: 8px;
-    width: calc(300px - 8px);
+    width: 500px;
     height: calc(150px - 8px);
 }
 
-.pickShape {
+.pickShape,
+.game-mode,
+.change-restart {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 3fr;
+    grid-template-rows: 28.75px 3fr;
+    row-gap: 18px;
     justify-items: center;
 }
 
-.pickShape .textPickShape {
+.textPickShape,
+.textGameMode,
+.results {
     grid-column: 1/3;
     grid-row: 1/2;
     font-family: PatrickHand;
-    font-size: 30px;
+    font-size: 25px;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.pickShape .xButton,
-.pickShape .oButton {
+.xButton,
+.oButton,
+.change,
+.restart,
+.vsCpu,
+.vsPlayer {
     display: flex;
     align-items: center;
     justify-content: center;
     border: 4px solid var(--main-color);
     border-radius: 10px;
     font-family: PatrickHand;
-    font-size: 40px;
+    font-size: 25px;
     font-weight: 900;
-    width: 70px;
+    width: 200px;
     height: 70px;
 }
 
+.xButton,
+.oButton {
+    font-size: 40px;
+}
+
 .xButton:hover,
-.oButton:hover {
+.oButton:hover,
+.change:hover,
+.restart:hover,
+.vsCpu:hover,
+.vsPlayer:hover {
     color: var(--background-color);
     background-color: var(--main-color);
     box-shadow: 1px 1px 3px rgba(119, 119, 119, 0.5),
@@ -142,45 +162,6 @@ body {
     cursor: pointer;
 }
 
-.change-restart  {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    justify-items: center;
-}
-.change-restart .change,
-.change-restart .restart {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid var(--main-color);
-    border-radius: 10px;
-    font-family: PatrickHand;
-    font-size: 40px;
-    font-weight: 900;
-    width: 70px;
-    height: 70px;
-}
-
-.game-mode  {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr;
-    justify-items: center;
-}
-.game-mode .vsCpu,
-.game-mode .vsPlayer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 4px solid var(--main-color);
-    border-radius: 10px;
-    font-family: PatrickHand;
-    font-size: 40px;
-    font-weight: 900;
-    width: 70px;
-    height: 70px;
-}
 .hide {
     display: none;
 }

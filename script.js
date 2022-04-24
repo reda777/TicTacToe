@@ -49,15 +49,15 @@ const gameBoard = (() => {
         mLine1: [bSquares.s0, bSquares.s4, bSquares.s8],
         mLine2: [bSquares.s2, bSquares.s4, bSquares.s6]
     };
-    Array.prototype.random = function () {
-        return this[Math.floor((Math.random() * this.length))];
-    }
     const randomIndex = function () {
+        Array.prototype.random = function () {
+            return this[Math.floor((Math.random() * this.length))];
+        }
         return Object.values(bSquares).filter(x => x.content == 0).map(x => x.id).random();
     }
-    const checkWinningCondition = function () {
+    const checkWinningCondition = function (shapeValue) {
         for (let line in boardLines) {
-            if (boardLines[line].reduce((a, b) => a + b.content, 0) == 2) {
+            if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue*2) {
                 return true;
             }
         }
@@ -94,22 +94,22 @@ const gameBoard = (() => {
             }
         },
         playerVScpu: function () {
+            let shapeValue=(player1.shape=="x")?1:-10;
             this.textContent = player1.shape;
             fillSquaresObject(this, player1.shape);
             this.removeEventListener("click", gameMode.playerVScpu);
             const winnerStatus = checkWinner();
             //player played for the first time. cpu plays at random place.
-            if (Object.values(bSquares).reduce((a, b) => a + b.content, 0) == 1) {
+            if (Object.values(bSquares).reduce((a, b) => a + b.content, 0) == shapeValue) {
                 fillRandomSquare();
             }
-            else if (Object.values(bSquares).reduce((a, b) => a + b.content, 0) < 1 && !winnerStatus) {
+            else if (!winnerStatus) {
                 for (let line in boardLines) {
                     //if player is winning next turn
-                    if (boardLines[line].reduce((a, b) => a + b.content, 0) == 2) {
+                    if (boardLines[line].reduce((a, b) => a + b.content, 0) == shapeValue*2) {
                         for (let item of boardLines[line]) {
                             if (item.content == 0) {
                                 const nextSquare = document.getElementById(Object.keys(bSquares).find(key => bSquares[key].id == item.id));
-                                console.log(nextSquare);
                                 nextSquare.textContent = player2.shape;
                                 fillSquaresObject(nextSquare, player2.shape);
                                 nextSquare.removeEventListener("click", gameMode.playerVScpu);
@@ -119,7 +119,7 @@ const gameBoard = (() => {
                         break;
                     }
                     //if player isn't winning next turn
-                    else if (!checkWinningCondition()) {
+                    else if (!checkWinningCondition(shapeValue)) {
                         fillRandomSquare();
                         checkWinner();
                         break;
@@ -136,20 +136,20 @@ const gameBoard = (() => {
         const results=document.querySelector(".results");
         for (let line in boardLines) {
             if (boardLines[line].reduce((a, b) => a + b.content, 0) == 3) {
-                results.textContent="X WON";
+                results.textContent="X Won (ﾉ^_^)ﾉ";
                 removeListeners();
                 return true;
             }
             else if (boardLines[line].reduce((a, b) => a + b.content, 0) == -30) {
-                results.textContent="O WON";
+                results.textContent="O Won (ﾉ^_^)ﾉ";
                 removeListeners();
                 return true;
             }
-            else if (Object.values(bSquares).filter(x => x.content == 0).length == 0) {
-                results.textContent="TIE";
-                removeListeners();
-                return true;
-            }
+        }
+        if (Object.values(bSquares).filter(x => x.content == 0).length == 0) {
+            results.textContent="Tie (-_-)";
+            removeListeners();
+            return true;
         }
     }
     const addListeners=function(){
@@ -218,6 +218,7 @@ const userInterface = (()=>{
         gameUi.classList.remove("hide");
         const change = document.querySelector(".change");
         const restart = document.querySelector(".restart");
+        const results=document.querySelector(".results");
         change.addEventListener("click",() => {
             gameUi.classList.add("hide");
             Object.values(gameBoard.bSquares).forEach(item => {
@@ -228,8 +229,9 @@ const userInterface = (()=>{
             boardSquares.forEach((square) => {
                 square.textContent = "";
             });
-            //remove listners
+            //remove listeners
             gameBoard.removeListeners();
+            results.textContent="";
             pickMode();
         });
         restart.addEventListener("click",()=>{
@@ -242,8 +244,9 @@ const userInterface = (()=>{
             boardSquares.forEach((square) => {
                 square.textContent = "";
             });
-            //remove listners
+            //remove listeners
             gameBoard.removeListeners();
+            results.textContent="";
             pickShape();
         });
     }
@@ -251,6 +254,5 @@ const userInterface = (()=>{
 })();
 userInterface.pickMode();
 //whats left
-//fix cpu not working as intended when using o
 //design still need work
 
